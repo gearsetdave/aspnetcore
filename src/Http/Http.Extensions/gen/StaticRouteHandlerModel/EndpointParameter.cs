@@ -23,6 +23,7 @@ internal class EndpointParameter
     {
         Ordinal = parameter.Ordinal;
         IsOptional = parameter.IsOptional();
+        HasDefaultValue = parameter.HasExplicitDefaultValue;
         DefaultValue = parameter.GetDefaultValueString();
         ProcessEndpointParameterSource(endpoint, parameter, parameter.GetAttributes(), wellKnownTypes);
     }
@@ -32,6 +33,7 @@ internal class EndpointParameter
         Ordinal = parameter?.Ordinal ?? 0;
         IsProperty = true;
         IsOptional = property.IsOptional() || parameter?.IsOptional() == true;
+        HasDefaultValue = parameter?.HasExplicitDefaultValue ?? false;
         DefaultValue = parameter?.GetDefaultValueString() ?? "null";
         // Coalesce attributes on the property and attributes on the matching parameter
         var attributeBuilder = ImmutableArray.CreateBuilder<AttributeData>();
@@ -251,6 +253,7 @@ internal class EndpointParameter
     public bool IsOptional { get; set; }
     public bool IsArray { get; set; }
     public string DefaultValue { get; set; } = "null";
+    public bool HasDefaultValue { get; set; }
     [MemberNotNullWhen(true, nameof(PropertyAsParameterInfoConstruction))]
     public bool IsProperty { get; set; }
     public EndpointParameterSource Source { get; set; }
